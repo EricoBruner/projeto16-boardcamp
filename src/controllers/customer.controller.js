@@ -52,15 +52,31 @@ export async function getCustomer(req, res) {
 
 export async function editCustomer(req, res) {
   try {
-    const customer = {
-      name: "João Alfredo",
-      phone: "21998899222",
-      cpf: "01234567890",
-      birthday: "1992-10-25",
+    const c = {
+      name: req.body.name,
+      phone: req.body.phone,
+      cpf: req.body.cpf,
+      birthday: req.body.birthday,
     };
 
-    const error = customerValidator(customer);
+    const error = customerValidator(c);
     if (error) return res.status(422).send(error);
+
+    const { id } = req.params;
+    if (!id || id < 0 || isNaN(id)) return res.sendStatus(404);
+
+    const response = await db.query("SELECT * FROM customers WHERE id=$1;", [
+      id,
+    ]);
+
+    const customer = response.rows[0];
+
+    if (customer.cpf != c.cpf) return res.sendStatus(409);
+
+    await db.query(
+      "UPDATE customers SET name=$1, phone=$2, cpf=$3, birthday=$4 WHERE id=$5;",
+      [c.name, c.phone, c.cpf, c.birthday, id]
+    );
 
     return res.sendStatus(200);
   } catch (err) {

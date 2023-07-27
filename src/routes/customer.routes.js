@@ -6,7 +6,7 @@ const customerRouter = Router();
 
 customerRouter.post("/customers", customerController.createCustomer);
 
-customerRouter.put("/customers", customerController.editCustomer);
+customerRouter.put("/customers/:id", customerController.editCustomer);
 
 customerRouter.get("/customers", customerController.getAllCustomers);
 customerRouter.get("/customers/:id", customerController.getCustomer);
