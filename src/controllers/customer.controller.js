@@ -11,7 +11,7 @@ export async function createCustomer(req, res) {
     };
 
     const error = customerValidator(c);
-    if (error) return res.status(422).send(error);
+    if (error) return res.status(400).send(error);
 
     const userExist = await db.query(
       "SELECT * FROM customers WHERE cpf = $1;",
@@ -60,7 +60,7 @@ export async function editCustomer(req, res) {
     };
 
     const error = customerValidator(c);
-    if (error) return res.status(422).send(error);
+    if (error) return res.status(400).send(error);
 
     const { id } = req.params;
     if (!id || id < 0 || isNaN(id)) return res.sendStatus(404);
