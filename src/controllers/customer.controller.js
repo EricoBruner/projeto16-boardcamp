@@ -62,7 +62,10 @@ export async function editCustomer(req, res) {
 
 export async function getAllCustomers(req, res) {
   try {
-    return res.sendStatus(200);
+    const response = await db.query("SELECT * FROM customers;");
+    const customers = response.rows;
+
+    return res.status(200).send(customers);
   } catch (err) {
     return res.status(500).send(err.message);
   }
