@@ -33,10 +33,18 @@ export async function createCustomer(req, res) {
 
 export async function getCustomer(req, res) {
   try {
-    const id = req.params;
-    if (!id) return res.sendStatus(404);
+    const { id } = req.params;
 
-    return res.sendStatus(200);
+    if (!id || id < 0 || isNaN(id)) return res.sendStatus(404);
+
+    const response = await db.query("SELECT * FROM customers WHERE id=$1;", [
+      id,
+    ]);
+
+    const customer = response.rows[0];
+    if (!customer) return res.sendStatus(404);
+
+    return res.status(200).send(customer);
   } catch (err) {
     return res.status(500).send(err.message);
   }
