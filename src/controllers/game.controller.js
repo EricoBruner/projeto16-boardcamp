@@ -32,7 +32,10 @@ export async function createGame(req, res) {
 
 export async function getAllGames(req, res) {
   try {
-    return res.sendStatus(200);
+    const response = await db.query("SELECT * FROM games;");
+    const games = response.rows;
+
+    return res.status(200).send(games);
   } catch (err) {
     return res.status(500).send(err.message);
   }
