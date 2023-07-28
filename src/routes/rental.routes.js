@@ -5,4 +5,6 @@ const rentalRouter = Router();
 
 rentalRouter.post("/rentals", rentalController.createRental);
 
+rentalRouter.get("/rentals", rentalController.getAllRentals);
+
 export default rentalRouter;

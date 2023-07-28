@@ -54,6 +54,47 @@ export async function createRental(req, res) {
   }
 }
 
+export async function getAllRentals(req, res) {
+  try {
+    const { rows: rentals } = await db.query(`
+      SELECT
+        r.*,
+        c.id AS customer_id,
+        c.name AS customer_name,
+        g.id AS game_id,
+        g.name AS game_name
+      FROM
+        rentals AS r
+      JOIN customers AS c ON r."customerId" = c.id
+      JOIN games AS g ON r."gameId" = g.id;
+    `);
+
+    const rentalsFormatted = rentals.map((rental) => {
+      const newRental = {
+        ...rental,
+        customer: {
+          id: rental.customer_id,
+          name: rental.customer_name,
+        },
+        game: {
+          id: rental.game_id,
+          name: rental.game_name,
+        },
+      };
+
+      delete newRental.customer_id;
+      delete newRental.customer_name;
+      delete newRental.game_id;
+      delete newRental.game_name;
+
+      return newRental;
+    });
+
+    return res.status(200).send(rentalsFormatted);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+}
 /*
   const returnDate = currentDate.add(req.body.daysRented, "day");
   const lateDays = returnDate.diff(currentDate, "day");
