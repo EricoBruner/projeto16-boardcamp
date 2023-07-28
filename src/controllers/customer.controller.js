@@ -13,10 +13,9 @@ export async function createCustomer(req, res) {
     const error = customerValidator(c);
     if (error) return res.status(400).send(error);
 
-    const userExist = await db.query(
-      "SELECT * FROM customers WHERE cpf = $1;",
-      [c.cpf]
-    );
+    const {
+      rows: [userExist],
+    } = await db.query("SELECT * FROM customers WHERE cpf = $1;", [c.cpf]);
 
     if (userExist) return res.sendStatus(409);
 

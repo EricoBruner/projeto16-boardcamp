@@ -1,5 +1,9 @@
 import { createGame, getAllGames } from "./game.controller.js";
-import { createRental, getAllRentals } from "./rental.controller.js";
+import {
+  createRental,
+  getAllRentals,
+  finalizeRental,
+} from "./rental.controller.js";
 import {
   getAllCustomers,
   getCustomer,
@@ -16,4 +20,4 @@ export const customerController = {
   getAllCustomers,
 };
 
-export const rentalController = { createRental, getAllRentals };
+export const rentalController = { createRental, getAllRentals, finalizeRental };

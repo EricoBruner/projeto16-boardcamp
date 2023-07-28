@@ -95,8 +95,48 @@ export async function getAllRentals(req, res) {
     return res.status(500).send(err.message);
   }
 }
-/*
-  const returnDate = currentDate.add(req.body.daysRented, "day");
-  const lateDays = returnDate.diff(currentDate, "day");
-  delayFee: lateDays > 0 ? lateDays * game.pricePerDay : 0,
-*/
+
+export async function finalizeRental(req, res) {
+  try {
+    const { id } = req.params;
+
+    const {
+      rows: [rental],
+    } = await db.query(
+      `
+      SELECT 
+        r.*, 
+        g."pricePerDay" AS "game_pricePerDay"
+      FROM rentals AS r
+      JOIN games AS g ON r."gameId" = g.id
+      WHERE r.id = $1;
+    `,
+      [id]
+    );
+
+    if (!rental) return res.sendStatus(404);
+    if (rental.returnDate != null) return res.sendStatus(400);
+
+    const currentDate = dayjs();
+    const returnDate = currentDate.add(rental.daysRented, "day");
+    const lateDays = currentDate.diff(returnDate, "day");
+
+    const newRental = {
+      ...rental,
+      returnDate: currentDate.format("YYYY-MM-DD"),
+      delayFee: lateDays > 0 ? lateDays * rental.game_pricePerDay : null,
+    };
+
+    await db.query(
+      `UPDATE rentals SET 
+        "returnDate"=$1,
+        "delayFee"=$2
+      WHERE id = $3;`,
+      [newRental.returnDate, newRental.delayFee, id]
+    );
+
+    return res.sendStatus(200);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+}
