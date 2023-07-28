@@ -140,3 +140,22 @@ export async function finalizeRental(req, res) {
     return res.status(500).send(err.message);
   }
 }
+
+export async function deleteRental(req, res) {
+  try {
+    const { id } = req.params;
+
+    const {
+      rows: [rental],
+    } = await db.query("SELECT * FROM rentals WHERE id = $1;", [id]);
+
+    if (!rental) return res.sendStatus(404);
+    if (rental.returnDate == null) return res.sendStatus(400);
+
+    await db.query("DELETE FROM rentals WHERE id = $1;", [id]);
+
+    return res.sendStatus(200);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+}

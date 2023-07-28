@@ -3,6 +3,7 @@ import {
   createRental,
   getAllRentals,
   finalizeRental,
+  deleteRental,
 } from "./rental.controller.js";
 import {
   getAllCustomers,
@@ -20,4 +21,9 @@ export const customerController = {
   getAllCustomers,
 };
 
-export const rentalController = { createRental, getAllRentals, finalizeRental };
+export const rentalController = {
+  createRental,
+  getAllRentals,
+  finalizeRental,
+  deleteRental,
+};

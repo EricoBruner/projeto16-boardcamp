@@ -8,4 +8,6 @@ rentalRouter.post("/rentals/:id/return", rentalController.finalizeRental);
 
 rentalRouter.get("/rentals", rentalController.getAllRentals);
 
+rentalRouter.delete("/rentals/:id", rentalController.deleteRental);
+
 export default rentalRouter;
