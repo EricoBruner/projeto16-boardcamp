@@ -65,11 +65,9 @@ export async function editCustomer(req, res) {
     const { id } = req.params;
     if (!id || id < 0 || isNaN(id)) return res.sendStatus(404);
 
-    const response = await db.query("SELECT * FROM customers WHERE id=$1;", [
-      id,
-    ]);
-
-    const customer = response.rows[0];
+    const {
+      rows: [customer],
+    } = await db.query("SELECT * FROM customers WHERE id=$1;", [id]);
 
     if (customer.cpf != c.cpf) return res.sendStatus(409);
 
