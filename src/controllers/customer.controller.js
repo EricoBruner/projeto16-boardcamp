@@ -36,9 +36,10 @@ export async function getCustomer(req, res) {
 
     if (!id || id < 0 || isNaN(id)) return res.sendStatus(404);
 
-    const response = await db.query("SELECT * FROM customers WHERE id=$1;", [
-      id,
-    ]);
+    const response = await db.query(
+      "SELECT *,TO_CHAR(birthday, 'YYYY-MM-DD') AS birthday FROM customers WHERE id=$1;",
+      [id]
+    );
 
     const customer = response.rows[0];
     if (!customer) return res.sendStatus(404);
