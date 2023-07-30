@@ -67,9 +67,9 @@ export async function editCustomer(req, res) {
 
     const {
       rows: [customer],
-    } = await db.query("SELECT * FROM customers WHERE id=$1;", [id]);
+    } = await db.query("SELECT * FROM customers WHERE cpf=$1;", [c.cpf]);
 
-    if (customer.cpf != c.cpf) return res.sendStatus(409);
+    if (customer && customer.id != id) return res.sendStatus(409);
 
     await db.query(
       "UPDATE customers SET name=$1, phone=$2, cpf=$3, birthday=$4 WHERE id=$5;",
