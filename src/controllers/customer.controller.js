@@ -86,7 +86,9 @@ export async function editCustomer(req, res) {
 
 export async function getAllCustomers(req, res) {
   try {
-    const response = await db.query("SELECT * FROM customers;");
+    const response = await db.query(
+      "SELECT *,TO_CHAR(birthday, 'YYYY-MM-DD') AS birthday FROM customers;"
+    );
     const customers = response.rows;
 
     return res.status(200).send(customers);
