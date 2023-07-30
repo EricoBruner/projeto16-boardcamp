@@ -131,8 +131,8 @@ export async function finalizeRental(req, res) {
     if (rental.returnDate != null) return res.sendStatus(400);
 
     const currentDate = dayjs();
-    const returnDate = currentDate.add(rental.daysRented, "day");
-    const lateDays = currentDate.diff(returnDate, "day");
+    const returnDate = dayjs(rental.rentDate).add(rental.daysRented, "day");
+    const lateDays = dayjs(currentDate).diff(returnDate, "day");
 
     const newRental = {
       ...rental,
