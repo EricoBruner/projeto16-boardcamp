@@ -33,6 +33,19 @@ export async function createRental(req, res) {
     } = await db.query("SELECT * FROM games WHERE id = $1;", [req.body.gameId]);
     if (!game) return res.sendStatus(400);
 
+    const { rows: rentals } = await db.query(
+      `SELECT * FROM rentals WHERE "gameId"=$1`,
+      [game.id]
+    );
+
+    let rented = 0;
+
+    rentals.map((rental) => {
+      if (rental.returnDate == null) rented += 1;
+    });
+
+    if (rented >= game.stockTotal) return res.sendStatus(400);
+
     r.originalPrice = r.daysRented * game.pricePerDay;
 
     await db.query(
